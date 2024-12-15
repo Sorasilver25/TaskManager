@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskManager</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+  <div class="container">
+    <div class="sectionHaut">
+      <div class="containerGauche">
+        <div id="dashboard" >
+  
+          <!-- <h3>Liste des tâches</h3> -->
+          <table id="task-table">
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Catégorie</th>
+                <th>Tags</th>
+                <th>État</th>
+                <th class="actions">Actions
+                  <button class="displayTask disabled" data-title="Tout afficher">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512">
+                      <circle cx="256" cy="256" r="64" fill="#fff" />
+                      <path fill="#fff" d="M394.82 141.18C351.1 111.2 304.31 96 255.76 96c-43.69 0-86.28 13-126.59 38.48C88.52 160.23 48.67 207 16 256c26.42 44 62.56 89.24 100.2 115.18C159.38 400.92 206.33 416 255.76 416c49 0 95.85-15.07 139.3-44.79C433.31 345 469.71 299.82 496 256c-26.38-43.43-62.9-88.56-101.18-114.82M256 352a96 96 0 1 1 96-96a96.11 96.11 0 0 1-96 96" />
+                    </svg>
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+       </div>
+       <div class="containerDroite">
+          <!-- <h1>Gestionnaire de tâches</h1> -->
+          <div class="stats">
+            <div class="blockStats">
+              <div class="headerStats">
+                <h3 id="labeltask">Statistiques</h3>
+                <div class="champsStats">
+                  <p id="task-count">Tâches totales : 0</p>
+                  <p id="completed-count">Tâches terminées : 0</p>
+                  <p id="in-progress-count">Tâches en cours : 0</p>
+                </div>
+              </div>
+              <canvas id="task-stats-chart"></canvas>
+            </div>
+            <div class="blockStats2">
+              <div class="headerStats">
+                <h3 id="labelcategory">Tâches par catégorie</h3>
+                <div class="champsStats2">
+                  <p id="work-count">Travail : 0</p>
+                  <p id="school-count">Ecole : 0</p>
+                  <p id="personal-count">Personnel : 0</p>
+                  <p id="other-count">Autre : 0</p>
+                </div>
+              </div>
+              <canvas id="category-stats-chart"></canvas>
+            </div>
+          </div>
+      </div>
+    </div>
+    <div class="sectionBas">
+      <div class="footerLeft">
+        <div class="add-task-container">
+          <div class="form" id="add-task-form">
+            <input type="text" id="task-name" placeholder="Nom de la tâche">
+            <input type="text" id="task-tags" placeholder="Tags (séparés par des virgules)">
+            <select id="task-category">
+              <option value="Travail">Travail</option>
+              <option value="Ecole">Ecole</option>
+              <option value="Personnel">Personnel</option>
+              <option value="Autre">Autre</option>
+            </select>
+            <button id="add-task">Ajouter
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path fill="#fff" d="M18 12.998h-5v5a1 1 0 0 1-2 0v-5H6a1 1 0 0 1 0-2h5v-5a1 1 0 0 1 2 0v5h5a1 1 0 0 1 0 2" />
+              </svg>
+            </button>
+          </div>
+         </div>      
+         <!-- Boutons d'import/export -->
+        <div class="export-import">
+          <button id="export-data">Exporter JSON
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <path fill="#fff" d="M1 2.5h8.48l2 2.5H23v8.846A6.5 6.5 0 0 0 12.232 21H1z" />
+              <path fill="#fff" d="m23.908 18.002l-4.858-4.914l-1.422 1.406l2.48 2.508h-7.11v2h7.11l-2.48 2.508l1.422 1.406z" />
+            </svg>
+          </button>
+          <input type="file" id="import-file" accept=".json">
+          <label for="import-file" class="btn-import">Importer JSON
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <path fill="#fff" d="M1 2.5h8.48l2 2.5H23v16H11.268A6.5 6.5 0 0 0 1 13.31z" />
+              <path fill="#fff" d="M10.908 18.002L6.05 13.088l-1.422 1.406l2.48 2.508h-7.11v2h7.11l-2.48 2.508l1.422 1.406z" />
+            </svg>
+          </label>
+        </div>
+      </div>
+      <div class="SupplementaryActions">
+        <button class="view-archieve" data-title="voir les anciennes tâches">Archives
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="#fff" d="M4 5h16V3H4zm16 4H4V7h16zM9 13h6v-2h6v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9h6z" />
+          </svg>
+        </button>
+        <button class="btn-graph" data-title="voir l'évolution des tâches">Graphique
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+            <path fill="#fff" d="M20 2v16H.32c-.318 0-.416-.209-.216-.465l4.469-5.748a.526.526 0 0 1 .789-.062l1.419 1.334a.473.473 0 0 0 .747-.096l3.047-4.74a.466.466 0 0 1 .741-.09l2.171 2.096c.232.225.559.18.724-.1l5.133-7.785C19.51 2.062 19.75 2 20 2" />
+          </svg>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
