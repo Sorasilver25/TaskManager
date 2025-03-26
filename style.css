@@ -167,6 +167,10 @@ body {
     background: #f3f3f3;
   }
 
+  tr.edited {
+    background:rgb(252, 255, 149);
+  }
+
   .actions {
     width: auto;
     display: flex;
@@ -274,6 +278,39 @@ body {
     margin: unset;
   }
 
+  .task-validation {
+    background-color: #30db4e;
+    margin-left: 10px;
+    padding: unset;
+    width: 3vw;
+    display: flex;
+    justify-content: center;
+  }
+
+  .task-to-validate {
+    background-color: #ffcc00;
+    margin-left: 10px;
+    padding: unset;
+    width: 3vw;
+    display: flex;
+    justify-content: center;
+      svg {
+        margin: unset;
+      }
+  }
+
+  .task-to-validate:hover {
+    background-color: #bc9600;
+  }
+
+  .task-validation:hover {
+    background-color: #008318;
+  }
+
+  .task-validation svg {
+    margin: unset;
+  }
+
   .displayTask {
     margin-left: 10px;
     padding: unset;
@@ -315,6 +352,15 @@ body {
     position: relative;
     justify-content: center;
     width: 100%;
+  }
+
+  #add-task.edit {
+    background: rgb(248, 255, 0);
+    color: black;
+  }
+
+  #add-task.edit:hover {
+    background: rgb(201, 207, 0);
   }
 
   #task-category {
@@ -437,6 +483,14 @@ body {
   [data-title] {
     position: relative;
     cursor: pointer;
+  }
+
+  [data-status="true"] {
+    background-color: #b8eaae;
+  }
+
+  [data-mask="true"] {
+    display: none;
   }
 
   /* Style de l'infobulle */
