@@ -9,7 +9,6 @@ $(document).ready(function () {
     taskList.push(task);
     updateTaskStats();
 
-    // Mettre à jour le tableau
     const tr = $(`<tr data-category="${category}" data-status="${status}" data-id="${id}" data-mask="${mask}">
       <td class="truncate" title="${name}">${name}</td>
       <td>${category}</td>
@@ -73,7 +72,6 @@ $(document).ready(function () {
       $('#task-tags').val(tags.join(', '));
       $('#task-category').val(category);
       $(this).closest('tr').addClass('edited')
-      // $('#add-task').text('Éditer');
       $('#add-task').find('svg').addClass('cache')
       $('#add-task').contents().first().replaceWith('Éditer');
       $('#add-task').addClass('edit');
@@ -83,16 +81,11 @@ $(document).ready(function () {
     
     tr.find('.task-mask').on('click', function () {
       $(this).closest('tr').addClass('cache');
-      let dataId = $(this).closest('tr').data('id');
+      const dataId = $(this).closest('tr').data('id');
       onTaskMask(dataId)
-
-      if($(this).closest('tr').hasClass('cache') && $('.displayTask').hasClass('disabled')){
-        $('.displayTask').removeClass('disabled');
-      }
     })
 
     $('.displayTask').off('click').on('click',function() {
-      // $('tr').removeClass('cache');
       displayAllTask()
       $(this).addClass('disabled')
     });
@@ -101,10 +94,8 @@ $(document).ready(function () {
   }
 
   function updateTable() {
-    // Efface les lignes existantes dans le tableau
-    $('#task-table tbody').empty(); // Ou utilise un autre sélecteur si ton tableau a une autre structure
+    $('#task-table tbody').empty();
   
-    // Pour chaque tâche dans taskList, ajoute une ligne <tr>
     taskList.forEach(task => {
       const { id, name, category, tags, status, mask } = task;
       const tr = $(`<tr data-category="${category}" data-status="${status}" data-id="${id}" data-mask="${mask}">
@@ -159,7 +150,6 @@ $(document).ready(function () {
         taskDone(dataId);
       })
   
-      // Actions : modifier et supprimer
       tr.find('.delete-task').on('click', function () {
         tr.remove();
         taskList = taskList.filter(t => t.id !== id);
@@ -171,28 +161,18 @@ $(document).ready(function () {
         $('#task-tags').val(tags.join(', '));
         $('#task-category').val(category);
         $(this).closest('tr').addClass('edited')
-        // $('#add-task').text('Éditer');
         $('#add-task').find('svg').addClass('cache')
         $('#add-task').contents().first().replaceWith('Éditer');
         $('#add-task').addClass('edit');
-
-        // taskList = taskList.filter(t => t.id !== id); // Supprimer avant réajout
-        // tr.remove();
-        // updateTaskStats();
       });
       
       tr.find('.task-mask').on('click', function () {
         $(this).closest('tr').addClass('cache');
-        let dataId = $(this).closest('tr').data('id');
+        const dataId = $(this).closest('tr').data('id');
         onTaskMask(dataId)
-
-        if($(this).closest('tr').hasClass('cache') && $('.displayTask').hasClass('disabled')){
-          $('.displayTask').removeClass('disabled');
-        }
       })
   
       $('.displayTask').off('click').on('click',function() {
-        // $('tr').removeClass('cache');
         displayAllTask()
         $(this).addClass('disabled')
       });
@@ -201,11 +181,11 @@ $(document).ready(function () {
     });
   }
 
-  // Statistiques des tâches
   function updateTaskStats() {
-    console.log(taskList)
     const total = taskList.length;
     const completed = taskList.filter(task => task.status).length;
+    const isHiddenTask = taskList.filter(task => task.mask).length;
+
     const inProgress = total - completed;
 
     const categoryStats = {
@@ -215,7 +195,10 @@ $(document).ready(function () {
       'Autre': taskList.filter(t => t.category === 'Autre').length,
     };
 
-    // Mettre à jour les statistiques textuelles
+    if(isHiddenTask && $('.displayTask').hasClass('disabled')){
+        $('.displayTask').removeClass('disabled');
+    }
+
     $('#task-count').text(`Tâches totales : ${total}`);
     $('#completed-count').text(`Tâches terminées : ${completed}`);
     $('#in-progress-count').text(`Tâches en cours : ${inProgress}`);
@@ -224,7 +207,6 @@ $(document).ready(function () {
     $('#personal-count').text(`Personnel : ${categoryStats['Personnel']}`);
     $('#other-count').text(`Autre : ${categoryStats['Autre']}`);
 
-    // Mettre à jour les graphiques
     updatePieChart('task-stats-chart', ['Terminée', 'En cours'], [completed, inProgress]);
     updatePieChart('category-stats-chart', Object.keys(categoryStats), Object.values(categoryStats));
   }
@@ -243,7 +225,6 @@ $(document).ready(function () {
   }
 
   function updateTask(id){
-    console.log(id)
     const TaskUpdated = taskList.filter(task => task.id === id);
     const name = $('#task-name').val().trim();
     const tags = $('#task-tags').val().trim().split(',').map(tag => tag.trim());
@@ -273,6 +254,10 @@ $(document).ready(function () {
       taskList[taskIndex] = TaskUpdated[0];
     }
 
+    if( $('.displayTask').hasClass('disabled')){
+      $('.displayTask').removeClass('disabled')
+    }
+
     updateTable()
   }
 
@@ -281,17 +266,14 @@ $(document).ready(function () {
       task.mask = false;
     });
 
-    console.log('tableau avant update', taskList)
-
     updateTable()
   }
 
-  // Mettre à jour le graphique en camembert
   function updatePieChart(chartId, labels, data) {
     const ctx = document.getElementById(chartId).getContext('2d');
     if (chartInstance[chartId]) {
-      chartInstance[chartId].data.labels = labels; // Met à jour les étiquettes
-      chartInstance[chartId].data.datasets[0].data = data; // Met à jour les données
+      chartInstance[chartId].data.labels = labels;
+      chartInstance[chartId].data.datasets[0].data = data;
       chartInstance[chartId].update();
     } else {
       chartInstance[chartId] = new Chart(ctx, {
@@ -307,14 +289,6 @@ $(document).ready(function () {
       options: {
         responsive: true,
         plugins: {
-        //   tooltip: {
-        //     callbacks: {
-        //       label: function (tooltipItem) {
-        //         const value = tooltipItem.raw;
-        //         return `Tâches : ${value} (${((value / totalCount) * 100).toFixed(2)}%)`;
-        //       }
-        //     }
-        //   },
           legend: {
             position: 'left',
             labels: {
@@ -328,7 +302,6 @@ $(document).ready(function () {
     }
   }
 
-  // Ajouter une tâche depuis le formulaire
   $('#add-task').on('click', function () {
     const id = `id-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
     const name = $('#task-name').val().trim();
@@ -350,23 +323,6 @@ $(document).ready(function () {
     }
   });
 
-  // // Afficher le tableau de bord
-  // $('#dashboard-section').off('click').on('click', function () {
-  //   $('#add-task-form').addClass('hidden');
-  //   $('.stats').removeClass('hidden');
-  //   $('#add-task-section').removeClass('disabled');
-  //   $(this).addClass('disabled');
-  // });
-
-  // // Afficher le formulaire d'ajout de tâche
-  // $('#add-task-section').on('click', function () {
-  //   $('#add-task-form').removeClass('hidden');
-  //   $('.stats').addClass('hidden');
-  //   $('#dashboard-section').removeClass('disabled');
-  //   $(this).addClass('disabled');
-  // });
-
-  // Exporter les données en JSON
   $('#export-data').on('click', function () {
     const jsonData = JSON.stringify(taskList, null, 2);
     const blob = new Blob([jsonData], { type: 'application/json' });
@@ -381,7 +337,6 @@ $(document).ready(function () {
     a.remove();
   });
 
-  // Importer les données JSON
   $('#import-file').on('change', function (event) {
     const file = event.target.files[0];
     if (!file) return;
